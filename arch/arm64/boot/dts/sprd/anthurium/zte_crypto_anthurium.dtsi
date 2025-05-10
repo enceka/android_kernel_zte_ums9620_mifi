@@ -1,0 +1,13 @@
+&spi2 {
+	status = "okay";
+	#address-cells = <1>;
+	#size-cells = <0>;
+	spi_ssx1207@0 {
+		compatible = "veb,veba5-spi";
+		reg = <0>;
+		spi-max-frequency = <1000000>;
+		veb_spi_vebv3,reset-gpio = <&ap_gpio 131 0x0>;
+		veb_spi_vebv3,status-gpio = <&ap_gpio 186 0x0>;
+		veb_spi_vebv3,wake-gpio = <&ap_gpio 112 0x0>;
+	};
+};

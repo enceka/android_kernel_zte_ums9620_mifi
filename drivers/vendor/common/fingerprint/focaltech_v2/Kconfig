@@ -1,0 +1,9 @@
+#
+# focaltech Fingerprint driver configuration
+#
+
+config PLATFORM_FINGERPRINT_FOCALTECH_V2
+       bool "generic focaltech_FT9391SD fingerprint driver"
+       default n
+       help
+       add support for focaltech fingerprint driver.

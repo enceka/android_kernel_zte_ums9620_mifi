@@ -1,0 +1,9 @@
+obj-$(CONFIG_ZTE_CRYPTO_VEB_A5) += zte_crypto.o
+zte_crypto-objs := veb_spi.o
+zte_crypto-objs += veb_platform.o
+zte_crypto-objs += veb_base.o
+zte_crypto-objs += veb_crc.o
+zte_crypto-objs += veb_sha.o
+zte_crypto-objs += veb_smartcard.o
+zte_crypto-objs += veb_a5_upgrade.o
+#veb_a5spi-objs += veb_a5_upgrade_smart.o

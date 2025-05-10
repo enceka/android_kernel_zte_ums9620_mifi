@@ -1,0 +1,261 @@
+#include <dt-bindings/usb/pd.h>
+#include <dt-bindings/mfd/sprd,ump9620-regs.h>
+#include <dt-bindings/mfd/sprd,ump9620-mask.h>
+
+/ {
+	bat: battery {
+		compatible = "simple-battery";
+		charge-full-design-microamp-hours = <3690000>;
+		charge-term-current-microamp = <120000>;
+		constant-charge-voltage-max-microvolt = <4400000>;
+		factory-internal-resistance-micro-ohms = <130000>;
+		voltage-min-design-microvolt = <3450000>;
+		fullbatt-voltage = <4350000>;
+		fullbatt-current = <120000>;
+		fullbatt-track-end-vol = <4345000>;
+		fullbatt-track-end-cur = <130000>;
+		first-calib-voltage = <3630000>;
+		first-calib-capacity = <50>;
+
+		cap-calib-energy-density-ocv-table = <3350000 3800000>, <4150000 4350000>;
+		cap-track-energy-density-ocv-table = <3400000 3722000>;
+
+		ocv-capacity-celsius = <20>;
+		ocv-capacity-table-0 = <4380000 100>, <4317000 95>, <4258000 90>,
+					<4200000 85>, <4145000 80>, <4092000 75>,
+					<4047000 70>, <3990000 65>, <3955000 60>,
+					<3900000 55>, <3861000 50>, <3834000 45>,
+					<3813000 40>, <3796000 35>, <3783000 30>,
+					<3770000 25>, <3752000 20>, <3730000 15>,
+					<3698000 10>, <3687000 5>, <3400000 0>;
+		voltage-temp-table = <1095000 800>, <986000 850>, <878000 900>,
+					<775000 950>, <678000 1000>, <590000 1050>,
+					<510000 1100>, <440000 1150>, <378000 1200>,
+					<324000 1250>, <278000 1300>, <238000 1350>,
+					<204000 1400>, <175000 1450>, <150000 1500>,
+					<129000 1550>, <111000 1600>, <96000 1650>;
+		capacity-temp-table = <45 100>, <25 100>, <10 98>, <0 93>, <(-10) 85>, <(-20) 64>;
+		resistance-temp-table = <45 77>, <25 100>, <10 546>, <0 769>, <(-10) 892>, <(-20) 923>;
+		charge-sdp-current-microamp = <500000 500000>;
+		charge-dcp-current-microamp = <1150000 3000000>;
+		charge-cdp-current-microamp = <1150000 1150000>;
+		charge-unknown-current-microamp = <500000 500000>;
+
+		dcp-jeita-temp-table = <1000 1030 0 4400000>, <1150 1180 700000 4400000>,
+			<1450 1420 1150000 4400000>, <1600 1570 700000 4100000>;
+		sdp-jeita-temp-table = <1000 1030 0 4400000>, <1150 1180 500000 4400000>,
+			<1450 1420 500000 4400000>, <1600 1570 500000 4100000>;
+		cdp-jeita-temp-table = <1000 1030 0 4400000>, <1150 1180 700000 4400000>,
+			<1450 1420 1150000 4400000>, <1600 1570 700000 4100000>;
+		unknown-jeita-temp-table = <1000 1030 0 4400000>, <1150 1180 500000 4400000>,
+			<1450 1420 500000 4400000>, <1600 1570 500000 4100000>;
+		force-jeita-status = <2>;
+	};
+
+	charger-manager {
+		compatible = "charger-manager";
+		cm-name = "battery";
+		cm-poll-mode = <2>;
+		cm-poll-interval = <15000>;
+		cm-battery-stat = <2>;
+
+		cm-fullbatt-vchkdrop-ms = <30000>;
+		cm-fullbatt-vchkdrop-volt = <60000>;
+		cm-fullbatt-voltage = <4330000>;
+		cm-fullbatt-current = <120000>;
+		cm-fullbatt-capacity = <100>;
+
+		cm-num-chargers = <1>;
+		cm-chargers = "fan54015_charger";
+		cm-fuel-gauge = "sc27xx-fgu";
+
+		/* in deci centigrade */
+		cm-battery-cold = <200>;
+		cm-battery-cold-in-minus;
+		cm-battery-hot = <800>;
+		cm-battery-temp-diff = <100>;
+
+		/* Allow charging for 6hr */
+		cm-charging-max = <21600000>;
+		/* recovery charging after stop charging 45min */
+		cm-discharging-max = <2700000>;
+
+		/* the interval to feed charger watchdog */
+		cm-wdt-interval = <60>;
+
+		/* drop voltage in microVolts to allow shutdown */
+		cm-shutdown-voltage = <3100000>;
+
+		/* when 99% of the time is exceeded, it will be forced to 100% */
+		cm-tickle-time-out = <1500>;
+
+		/* how much time to allow capacity change */
+		cm-one-cap-time = <30>;
+
+		/* when the safe charging voltage is exceeded, stop charging */
+		cm-charge-voltage-max = <6500000>;
+		/* drop voltage in microVolts to restart charging */
+		cm-charge-voltage-drop = <700000>;
+		cm-dcp-jeita-temp-table = <1000 1030 0 4350000>, <1150 1180 700000 4350000>,
+			<1450 1420 1150000 4350000>, <1600 1570 700000 4100000>;
+		cm-sdp-jeita-temp-table = <1000 1030 0 4350000>, <1150 1180 500000 4350000>,
+			<1450 1420 500000 4350000>, <1600 1570 500000 4100000>;
+		cm-cdp-jeita-temp-table = <1000 1030 0 4350000>, <1150 1180 700000 4350000>,
+			<1450 1420 1150000 4350000>, <1600 1570 700000 4100000>;
+		cm-unknown-jeita-temp-table = <1000 1030 0 4350000>, <1150 1180 500000 4350000>,
+			<1450 1420 500000 4350000>, <1600 1570 500000 4100000>;
+
+		monitored-battery = <&bat>;
+		cm-capacity-track;
+
+		regulator@0 {
+			cm-regulator-name = "vddgen0";
+			cable@0 {
+				cm-cable-name = "USB";
+				extcon = <&pmic_typec>;
+			};
+		};
+	};
+};
+
+&bat {
+	charge-term-current-microamp = <420000>;
+	constant-charge-voltage-max-microvolt = <3700000>;
+	constant-charge-current-max-microamp = <3000000>;
+	factory-internal-resistance-micro-ohms = <127000>;
+	voltage-min-design-microvolt = <3450000>;
+	fast-charge-threshold-microvolt = <4100000>;
+	fullbatt-voltage = <4350000>;
+	fullbatt-current = <120000>;
+	fullbatt-track-end-vol = <4300000>;
+	fullbatt-track-end-cur = <130000>;
+	first-calib-voltage = <3580000>;
+	first-calib-capacity = <50>;
+
+	ir-cv-offset-microvolt = <100000>;
+	ir-rc-micro-ohms = <20000>;
+	ir-us-upper-limit-microvolt = <4500000>;
+	ocv-capacity-celsius = <25>;
+	charge-full-design-microamp-hours = <4520000>;
+	/*Minimum Capacity 4520*0.9 = 4068 4520*0.94 = 4249 4520*0.95 = 4294 4520*0.96 = 4339,we use *0.94 */
+	charge-full-microamp-hours = <4250000>;
+	ocv-capacity-table-0 = <4386000 100>, <4334000 95>, <4281000 90>,
+				<4224000 85>, <4167000 80>, <4112000 75>,
+				<4060000 70>, <4011000 65>, <3958000 60>,
+				<3898000 55>, <3863000 50>, <3836000 45>,
+				<3812000 40>, <3793000 35>, <3774000 30>,
+				<3751000 25>, <3729000 20>, <3703000 15>,
+				<3676000 10>, <3663000 5>, <3400000 0>;
+	/* NTC 100k, Vref 1850mV, R pull-up 110K, R pull-down 1000k */
+	voltage-temp-table = <1568441 750>, <1534549 800>, <1492014 850>,
+				<1439819 900>, <1377274 950>, <1304550 1000>,
+				<1222195 1050>, <1131821 1100>, <1035662 1150>,
+				<936426 1200>, <837104 1250>, <740441 1300>,
+				<648801 1350>, <563916 1400>, <486937 1450>,
+				<418193 1500>, <357806 1550>, <305304 1600>,
+				<260067 1650>, <221438 1700>, <188468 1750>;
+	capacity-temp-table = <25 100>, <10 100>, <0 94>, <(-10) 86>, <(-20) 68>;
+	resistance-temp-table = <25 100>, <10 337>, <0 902>, <(-10) 981>, <(-20) 1133>;
+	charge-sdp-current-microamp = <700000 3200000>;
+	charge-dcp-current-microamp = <3400000 3200000>;
+	charge-cdp-current-microamp = <3400000 3200000>;
+	charge-unknown-current-microamp = <1000000 3200000>;
+	charge-fchg-current-microamp = <1950000 3200000>;
+	charge-flash-current-microamp = <1950000 3200000>;
+	dcp-jeita-temp-table = <1000 1030 0 3700000>,
+				<1100 1130 884000 3700000>,
+				<1150 1180 3000000 3700000>,
+				<1450 1410 3000000 3700000>,
+				<1550 1520 2210000 3700000>;
+	sdp-jeita-temp-table = <1000 1030 0 3700000>,
+				<1100 1130 884000 3700000>,
+				<1150 1180 3000000 3700000>,
+				<1450 1410 3000000 3700000>,
+				<1550 1520 2210000 3700000>;
+	cdp-jeita-temp-table = <1000 1030 0 3700000>,
+				<1100 1130 884000 3700000>,
+				<1150 1180 3000000 3700000>,
+				<1450 1410 3000000 3700000>,
+				<1550 1520 2210000 3700000>;
+	unknown-jeita-temp-table = <1000 1030 0 3700000>,
+				<1100 1130 884000 3700000>,
+				<1150 1180 3000000 3700000>,
+				<1450 1410 3000000 3700000>,
+				<1550 1520 2210000 3700000>;
+	fchg-jeita-temp-table = <1000 1030 0 3700000>,
+				<1050 1080 1400000 3700000>,
+				<1100 1180 1400000 3700000>,
+				<1450 1420 3000000 3700000>,
+				<1550 1520 2400000 3700000>;
+	flash-jeita-temp-table = <1000 1030 0 3700000>,
+				<1050 1080 1400000 3700000>,
+				<1100 1180 1400000 3700000>,
+				<1450 1420 3000000 3700000>,
+				<1550 1520 2400000 3700000>;
+};
+
+&pmic_fgu {
+	monitored-battery = <&bat>;
+	sprd,calib-resistance-spec = <20000>;
+	io-channels = <&pmic_adc 6>, <&pmic_adc 0>, <&pmic_adc 14>;
+	io-channel-names = "adc-batt-id", "bat-temp", "charge-vol";
+};
+
+&pmic_pd {
+	status = "disabled";
+};
+
+&pmic_fchg {
+	status = "disabled";
+};
+
+/ {
+	charger-manager {
+		cm-fullbatt-voltage = <4300000>;
+		cm-fullbatt-vchkdrop-volt = <50000>;
+		cm-fullbatt-current = <240000>;
+		cm-fullbatt-comp-voltage = <32000>;
+		cm-thermal-limit = <2>;
+		cm-fullbatt-advance-level = <970>;
+		/* in deci centigrade */
+		cm-battery-cold = <0>;
+		cm-battery-hot = <550>;
+		cm-battery-temp-diff = <30>;
+		cm-tickle-time-out = <180>;
+
+		cm-disable-charger-type-jeita;
+		/* sprd_fchg parameter */
+		sprd,support-fchg;
+		sprd,support-pd-pps;
+		sprd,pd-fixed-max-microwatt = <18000000>;
+
+		pd-extcon-enable;
+		extcon = <&pmic_typec>, <&pmic_pd>;
+
+		cm-chargers = "bq2560x_charger";
+		cm-hardware-psy = "bq2560x_charger";
+		monitored-battery = <&bat>;
+		phys = <&ssphy>;
+	};
+
+	zte_misc: zte_misc {
+		status = "okay";
+		compatible = "zte-misc";
+	};
+};
+
+&i2c6 {
+	status = "okay";
+	bq2560x_chg: charger@6b {
+		compatible = "ti,bq2560x_chg";
+		reg = <0x6b>;
+		phys = <&ssphy>;
+		monitored-battery = <&bat>;
+		extcon = <&extcon_gpio>;
+		vindpm-value = <4270>;
+		vddvbus:otg-vbus {
+			regulator-name = "vddvbus";
+		};
+	};
+};
+

@@ -1,0 +1,9 @@
+/*
+ * this file is ued to change sprd dtsi which can't be changed by overlay
+ * such as /delete-node/ /delete-property/ and alises
+ */
+
+#include "zte_charger_anthurium.dtsi"
+#include "zte_audio_anthurium.dtsi"
+#include "zte_camera_anthurium.dtsi"
+#include "zte_crypto_anthurium.dtsi"

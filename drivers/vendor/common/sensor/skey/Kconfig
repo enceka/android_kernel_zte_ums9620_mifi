@@ -1,0 +1,7 @@
+config SKEY_SENSOR_AW9620X
+	tristate "SKEY_SENSOR_AW9620X"
+		depends on I2C
+		default n
+		help
+			Say Y here to build support for sensor hub new.
+			To compile this driver as a module, choose M here.

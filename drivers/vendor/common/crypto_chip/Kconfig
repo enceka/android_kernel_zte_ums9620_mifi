@@ -1,0 +1,23 @@
+config ZTE_CRYPTO_CHIP
+	bool "ZTE_CRYPTO_CHIP"
+		depends on I2C
+		default n
+		help
+		  Say Y here if you have zte crypto chip.
+		  If unsure, say N.
+
+config ZTE_CRYPTO_ATSHA204A
+	bool "ZTE_CRYPTO_ATSHA204A"
+		depends on I2C
+		default n
+		help
+		  Say Y here if you have crypto atsha204a chip.
+		  If unsure, say N.
+
+config ZTE_CRYPTO_VEB_A5
+	tristate "ZTE_CRYPTO_VEB_A5"
+		depends on SPI
+		default n
+		help
+		  Say Y here to build support for crypto veb a5 new.
+		  To compile this driver as a module, choose M here.
